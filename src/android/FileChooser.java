@@ -59,7 +59,24 @@ public class FileChooser extends CordovaPlugin {
                 if (uri != null) {
 
                     Log.w(TAG, uri.toString());
-                    callback.success(uri.toString());
+                    if ("content".equals(uri.getScheme()))
+                    {
+                        String path = "";
+                        final String docId = DocumentsContract.getDocumentId(uri);
+                        final String[] split = docId.split(":");
+                        final String type = split[0];
+
+                        if ("primary".equalsIgnoreCase(type))
+                        {
+                            path = "file://" + Environment.getExternalStorageDirectory() + "/" + split[1];
+                        }
+
+                        callback.success(path);
+                    }
+                    else
+                    {
+                        callback.success(uri.toString());
+                    }
 
                 } else {
 
